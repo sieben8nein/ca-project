@@ -3,11 +3,11 @@ pipeline {
   environment {
     docker_username = 'sieben8nein'
   }
-  stages {
-    def remote = [:]
+  def remote = [:]
     remote.name = "ubuntu"
     remote.host = "34.78.27.10"
     remote.allowAnyHosts = true
+  stages {
     stage('HelloWorld') {
       steps {
         sh 'echo "hello world"'

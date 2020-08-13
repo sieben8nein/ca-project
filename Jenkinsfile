@@ -56,7 +56,7 @@ pipeline {
     }
     stage('deployment to testenv'){ 
       when{
-      
+        branch "dev/*"
       } 
       steps {
         unstash 'code'

@@ -3,18 +3,15 @@ pipeline {
   environment {
     docker_username = 'sieben8nein'
   }
-  options{
-    skipDefaultCheckout(true)
-  }
   stages {
     stage('Clone down') {
       steps {
-        skipDefaultCheckout(false)
         stash(excludes: '.git', name: 'code')
       }
     }
     stage('Test'){
       steps{
+        skipDefaultCheckout(true)
         unstash 'code'
         sh 'apt-get update && apt-get install -y python3-pip'
         sh 'pip3 install -r app/requirements.txt'
@@ -28,6 +25,7 @@ pipeline {
             DOCKERCREDS = credentials('docker_login') //use the credentials just created in this stage
             }
             steps {
+            skipDefaultCheckout(true)
             unstash 'code'
             sh 'echo "$DOCKERCREDS_PSW" | docker login -u "$DOCKERCREDS_USR" --password-stdin'
             sh 'docker build -t $docker_username/devopsproject .'
@@ -36,6 +34,7 @@ pipeline {
         }
       stage("Archive artifacts") {
         steps {
+          skipDefaultCheckout(true)
           unstash 'code'
           sh 'apt-get update && apt-get install -y zip unzip'
           sh 'zip -r project_artifact.zip .'
@@ -53,6 +52,7 @@ pipeline {
         DOCKERCREDS = credentials('docker_login') //use the credentials just created in this stage
       }
       steps{
+        skipDefaultCheckout(true)
         unstash 'image'
         sh 'echo "$DOCKERCREDS_PSW" | docker login -u "$DOCKERCREDS_USR" --password-stdin'
         sh 'docker push $docker_username/devopsproject'
@@ -63,6 +63,7 @@ pipeline {
         branch "dev/*"
       } 
       steps {
+        skipDefaultCheckout(true)
         unstash 'code'
         sshagent (credentials: ['ubuntu']) {
         
@@ -80,6 +81,7 @@ pipeline {
         branch "master"
       } 
       steps {
+        skipDefaultCheckout(true)
         unstash 'code'
         sshagent (credentials: ['ubuntu']) {
         

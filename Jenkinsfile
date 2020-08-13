@@ -47,7 +47,7 @@ pipeline {
       steps {
         unstash 'code'
         sshagent (credentials: ['ubuntu']) {
-
+        
         sh 'ssh -o StrictHostKeyChecking=no ubuntu@34.78.27.10 ls'
         sh "scp docker-compose.yml ubuntu@34.78.27.10/"
         sh 'docker-compose up'

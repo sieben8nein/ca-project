@@ -57,7 +57,7 @@ pipeline {
         sshagent (credentials: ['ubuntu']) {
         
         sh 'ssh -o StrictHostKeyChecking=no ubuntu@34.78.27.10 ls'
-        sh "scp docker-compose.yml ubuntu@34.78.27.10/home/ubuntu/project"
+        sh "scp docker-compose.yml ubuntu@34.78.27.10/project"
         sh 'docker-compose up'
         }
       }

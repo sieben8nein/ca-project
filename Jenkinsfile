@@ -49,6 +49,8 @@ pipeline {
         sh 'docker push $docker_username/devopsproject'
       }
     }
+    stage('deployment'){
+
     
     withCredentials([sshUserPrivateKey(credentialsId: 'ubuntu', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'userName')]) {
         remote.user = userName
@@ -57,6 +59,7 @@ pipeline {
             writeFile file: 'abc.sh', text: 'ls'
             sshCommand remote: remote, command: 'for i in {1..5}; do echo -n \"Loop \$i \"; date ; sleep 1; done'
         }
+    }
     }
   }
 }

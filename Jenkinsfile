@@ -42,6 +42,9 @@ pipeline {
     }
   }
     stage("Push docker image"){
+      when{
+        branch "master"
+      }
       environment {
         DOCKERCREDS = credentials('docker_login') //use the credentials just created in this stage
       }
@@ -51,7 +54,10 @@ pipeline {
         sh 'docker push $docker_username/devopsproject'
       }
     }
-    stage('deployment'){  
+    stage('deployment to testenv'){ 
+      when{
+      
+      } 
       steps {
         unstash 'code'
         sshagent (credentials: ['ubuntu']) {
@@ -59,7 +65,8 @@ pipeline {
         sh 'ssh -o StrictHostKeyChecking=no ubuntu@34.78.27.10 ls'
         sh "scp docker-compose.yml ubuntu@34.78.27.10:."
         sh 'ssh -o StrictHostKeyChecking=no ubuntu@34.78.27.10 docker-compose up'
-        sleep(time: 50, unit: "SECONDS")
+        sleep(time: 25, unit: "SECONDS")
+        sh 'ssh -o StrictHostKeyChecking=no ubuntu@34.78.27.10 docker-compose down'
         }
       }
     }

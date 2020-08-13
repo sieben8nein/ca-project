@@ -9,13 +9,15 @@ pipeline {
         sh 'echo "hello world"'
       }
     }
-    stage('Clone down') {
+
+    stage('clone down') {
       steps {
         stash(excludes: '.git', name: 'code')
       }
     }
-    stage('Test'){
-      steps{
+
+    stage('Test') {
+      steps {
         unstash 'code'
         sh 'apt-get update && apt-get install -y python3-pip'
         sh 'pip3 install -r app/requirements.txt'
@@ -41,6 +43,15 @@ pipeline {
         unstash 'image'
         sh 'echo "$DOCKERCREDS_PSW" | docker login -u "$DOCKERCREDS_USR" --password-stdin'
         sh 'docker push $docker_username/devopsproject'
+      }
+    }
+
+    stage('Archieve') {
+      steps {
+        sh 'mkdir archieve'
+        sh 'echo test > archieve/test.txt'
+        zip zipFile: 'test.zip', archieve: false, dir: 'archieve'
+        archiveArtifacts artifacts: 'test.zip', fingerprint: true
       }
     }
   }

@@ -56,8 +56,8 @@ pipeline {
         unstash 'code'
         sshagent (credentials: ['ubuntu']) {
         
-        sh 'ssh -o StrictHostKeyChecking=no ubuntu@34.78.27.10 mkdir -p project2 '
-        sh "scp docker-compose.yml ubuntu@34.78.27.10:./project2"
+        sh 'ssh -o StrictHostKeyChecking=no ubuntu@34.78.27.10 ls'
+        sh "scp docker-compose.yml ubuntu@34.78.27.10:."
         sh 'ssh -o StrictHostKeyChecking=no ubuntu@34.78.27.10 docker-compose up'
         sleep(time: 50, unit: "SECONDS")
         }

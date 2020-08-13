@@ -11,6 +11,7 @@ pipeline {
     }
     stage('Test'){
       steps{
+        skipDefaultCheckout(true)
         unstash 'code'
         sh 'apt-get update && apt-get install -y python3-pip'
         sh 'pip3 install -r app/requirements.txt'
@@ -54,9 +55,25 @@ pipeline {
         sh 'docker push $docker_username/devopsproject'
       }
     }
-    stage('deployment to testenv'){ 
+    stage('Deployment to testenv'){ 
       when{
         branch "dev/*"
+      } 
+      steps {
+        unstash 'code'
+        sshagent (credentials: ['ubuntu']) {
+        
+        sh 'ssh -o StrictHostKeyChecking=no ubuntu@34.78.27.10 ls'
+        sh "scp docker-compose.yml ubuntu@34.78.27.10:."
+        sh 'ssh -o StrictHostKeyChecking=no ubuntu@34.78.27.10 docker-compose up -d'
+        sleep(time: 25, unit: "SECONDS")
+        sh 'ssh -o StrictHostKeyChecking=no ubuntu@34.78.27.10 docker-compose down'
+        }
+      }
+    }
+    stage('Deployment to production'){ 
+      when{
+        branch "master"
       } 
       steps {
         unstash 'code'

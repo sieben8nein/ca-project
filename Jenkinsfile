@@ -49,17 +49,11 @@ pipeline {
         sh 'docker push $docker_username/devopsproject'
       }
     }
-    stage('deployment'){
-
-    
-    withCredentials([sshUserPrivateKey(credentialsId: 'ubuntu', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'userName')]) {
-        remote.user = userName
-        remote.identityFile = identity
-        stage("deploy to test env") {
-            writeFile file: 'abc.sh', text: 'ls'
-            sshCommand remote: remote, command: 'for i in {1..5}; do echo -n \"Loop \$i \"; date ; sleep 1; done'
-        }
-    }
+  stage('deployment'){  
+    steps {
+      sshagent (credentials: ['ubuntu']) {
+      sh 'ssh -o StrictHostKeyChecking=no ubuntu@34.78.27.10 ls'
+      }
     }
   }
 }

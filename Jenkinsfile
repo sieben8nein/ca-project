@@ -58,7 +58,7 @@ pipeline {
         
         sh 'ssh -o StrictHostKeyChecking=no ubuntu@34.78.27.10 mkdir project2 '
         sh "scp docker-compose.yml ubuntu@34.78.27.10:./project2"
-        sh 'docker-compose up'
+        sh 'ssh -o StrictHostKeyChecking=no ubuntu@34.78.27.10 docker-compose up'
         sleep(time: 50, unit: "SECONDS")
         }
       }

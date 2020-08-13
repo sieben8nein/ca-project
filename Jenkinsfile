@@ -1,14 +1,8 @@
-def remote = [:]
-remote.name = "ubuntu"
-remote.host = "34.78.27.10"
-remote.allowAnyHosts = true
-
 pipeline {
   agent any
   environment {
     docker_username = 'sieben8nein'
   }
-
   stages {
     stage('HelloWorld') {
       steps {
@@ -49,11 +43,12 @@ pipeline {
         sh 'docker push $docker_username/devopsproject'
       }
     }
-  stage('deployment'){  
-    steps {
-      sshagent (credentials: ['ubuntu']) {
-      sh 'ssh -o StrictHostKeyChecking=no ubuntu@34.78.27.10 ls'
+    stage('deployment'){  
+      steps {
+        sshagent (credentials: ['ubuntu']) {
+        sh 'ssh -o StrictHostKeyChecking=no ubuntu@34.78.27.10 ls'
       }
     }
   }
+}
 }

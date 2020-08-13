@@ -43,5 +43,17 @@ pipeline {
         sh 'docker push $docker_username/devopsproject'
       }
     }
+    def remote = [:]
+    remote.name = "ubuntu"
+    remote.host = "34.78.27.10"
+    remote.allowAnyHosts = true
+    withCredentials([sshUserPrivateKey(credentialsId: 'ubuntu', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'userName')]) {
+        remote.user = userName
+        remote.identityFile = identity
+        stage("deploy to test env") {
+            writeFile file: 'abc.sh', text: 'ls'
+            sshCommand remote: remote, command: 'for i in {1..5}; do echo -n \"Loop \$i \"; date ; sleep 1; done'
+        }
+    }
   }
 }

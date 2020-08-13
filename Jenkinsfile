@@ -69,7 +69,8 @@ pipeline {
         sh 'ssh -o StrictHostKeyChecking=no ubuntu@34.78.27.10 ls'
         sh "scp docker-compose.yml ubuntu@34.78.27.10:."
         sh 'ssh -o StrictHostKeyChecking=no ubuntu@34.78.27.10 docker-compose up -d'
-        sleep(time: 25, unit: "SECONDS")
+        sleep(time: 10, unit: "SECONDS")
+        sh 'curl 34.78.27.10:5000'
         sh 'ssh -o StrictHostKeyChecking=no ubuntu@34.78.27.10 docker-compose down'
         }
       }

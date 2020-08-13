@@ -24,12 +24,8 @@ pipeline {
     stage("Dockerize & Archive artifacts") {
       parallel {
         stage("Dockerize") {
-          environment {
-            DOCKERCREDS = credentials('docker_login') //use the credentials just created in this stage
-            }
             steps {
             unstash 'code'
-            sh 'echo "$DOCKERCREDS_PSW" | docker login -u "$DOCKERCREDS_USR" --password-stdin'
             sh 'docker build -t $docker_username/devopsproject .'
             stash(name: 'image')
           }

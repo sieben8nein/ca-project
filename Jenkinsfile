@@ -4,6 +4,10 @@ pipeline {
     docker_username = 'sieben8nein'
   }
   stages {
+    def remote = [:]
+    remote.name = "ubuntu"
+    remote.host = "34.78.27.10"
+    remote.allowAnyHosts = true
     stage('HelloWorld') {
       steps {
         sh 'echo "hello world"'
@@ -43,10 +47,7 @@ pipeline {
         sh 'docker push $docker_username/devopsproject'
       }
     }
-    def remote = [:]
-    remote.name = "ubuntu"
-    remote.host = "34.78.27.10"
-    remote.allowAnyHosts = true
+    
     withCredentials([sshUserPrivateKey(credentialsId: 'ubuntu', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'userName')]) {
         remote.user = userName
         remote.identityFile = identity
